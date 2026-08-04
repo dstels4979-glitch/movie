@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Приглашение в кино</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- background music -->
+  <audio id="bgm" src="music/background.mp3" loop preload="auto"></audio>
+  <button id="sound-toggle" class="sound-toggle" aria-label="Включить/выключить музыку" title="Музыка">🔈</button>
+
+  <!-- ambient background: stars / film dust -->
+  <div class="bg-scene">
+    <div class="vignette"></div>
+    <canvas id="dust"></canvas>
+    <div class="spotlight"></div>
+  </div>
+
+  <!-- curtains used for transition between scenes -->
+  <div class="curtain curtain-left"></div>
+  <div class="curtain curtain-right"></div>
+
+  <main id="app">
+
+    <!-- SCENE 1: main invite -->
+    <section class="scene" id="scene-invite" data-active="true">
+      <p class="eyebrow">🎬 Сегодня вечером</p>
+      <h1 class="title">Идём сегодня<br>на ночной сеанс фильма?</h1>
+      <div class="choice-row">
+        <button class="btn btn-primary" data-next="yes">
+          <span class="btn-icon">✅</span> Да
+        </button>
+        <button class="btn btn-ghost" data-next="no">
+          <span class="btn-icon">❌</span> Нет
+        </button>
+      </div>
+    </section>
+
+    <!-- SCENE 1b: shown only if "no" pressed -->
+    <section class="scene" id="scene-no">
+      <p class="eyebrow">Ну хорошо</p>
+      <h1 class="title">Ну ладно… Расскажи, почему<br>не получится, и когда тебе удобно.</h1>
+
+      <form class="no-form" id="no-form">
+        <label class="field">
+          <span class="field-label">Почему не получится?</span>
+          <textarea id="no-reason" class="field-input" rows="3" placeholder="Например: занята, устала, дела…"></textarea>
+        </label>
+
+        <div class="field-row">
+          <label class="field">
+            <span class="field-label">Удобный день</span>
+            <input type="date" id="no-day" class="field-input">
+          </label>
+          <label class="field">
+            <span class="field-label">Удобное время</span>
+            <input type="time" id="no-time" class="field-input">
+          </label>
+        </div>
+
+        <button class="btn btn-primary" id="btn-ok" type="submit">
+          Отправить
+        </button>
+      </form>
+    </section>
+
+    <!-- SCENE 2: time -->
+    <section class="scene" id="scene-time">
+      <p class="eyebrow">Почти готово</p>
+      <h1 class="title">После какого времени<br>тебе удобно?</h1>
+
+      <div class="slider-wrap">
+        <div class="slider-value" id="time-value">22:00</div>
+        <input type="range" id="time-slider" class="time-slider"
+               min="1080" max="1440" step="15" value="1320"
+               aria-label="Удобное время">
+        <div class="slider-scale">
+          <span>18:00</span>
+          <span>00:00</span>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" id="time-next">
+        Продолжить
+      </button>
+    </section>
+
+    <!-- SCENE 3: how to watch -->
+    <section class="scene scene-wide" id="scene-mode">
+      <p class="eyebrow">Последний вопрос</p>
+      <h1 class="title">Как будем смотреть фильм?</h1>
+      <div class="card-grid">
+
+        <article class="option-card" data-mode="hands">
+          <div class="option-img"><img src="images/Option1.png" alt="Держаться за ручку" loading="lazy"></div>
+          <h3 class="option-caption">Держаться за ручку</h3>
+          <button class="btn btn-select" data-mode="hands">
+            <span class="btn-icon">🤝</span> Выбрать
+          </button>
+        </article>
+
+        <article class="option-card" data-mode="hug">
+          <div class="option-img"><img src="images/Option2.png" alt="В обнимку" loading="lazy"></div>
+          <h3 class="option-caption">В обнимку</h3>
+          <button class="btn btn-select" data-mode="hug">
+            <span class="btn-icon">🤗</span> Выбрать
+          </button>
+        </article>
+
+        <article class="option-card" data-mode="mix">
+          <div class="option-img"><img src="images/Option3.png" alt="Можно комбинировать" loading="lazy"></div>
+          <h3 class="option-caption">Можно комбинировать</h3>
+          <button class="btn btn-select" data-mode="mix">
+            <span class="btn-icon">❤️</span> Выбрать
+          </button>
+        </article>
+
+        <article class="option-card" data-mode="none">
+          <div class="option-img"><img src="images/Option4.png" alt="Никак" loading="lazy"></div>
+          <h3 class="option-caption">Никак</h3>
+          <button class="btn btn-select" data-mode="none">
+            <span class="btn-icon">😅</span> Выбрать
+          </button>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- SCENE 4: final -->
+    <section class="scene" id="scene-final">
+      <div class="hearts" id="hearts"></div>
+      <p class="eyebrow" id="final-eyebrow">🎟 Билеты забронированы</p>
+      <h1 class="title title-final" id="final-title">Тогда до встречи <span class="heart-pulse">❤️</span></h1>
+
+      <div class="summary-card" id="summary-card">
+        <p class="summary-title">Итог</p>
+        <ul class="summary-list" id="summary-list"></ul>
+      </div>
+
+      <p class="send-note">
+        📸 Сделай скриншот этого экрана и отправь его в Telegram —
+        <a href="https://t.me/D4_20" target="_blank" rel="noopener">@D4_20</a>
+      </p>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
